@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils';
 import { formSchema } from './constants';
 
 const CodePage = () => {
+    const proModal = useProModal();
     const router = useRouter();
     const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
@@ -49,9 +50,10 @@ const CodePage = () => {
             setMessages((current) => [...current, userMessage, response.data]);
 
             form.reset();
-        } catch (error) {
-            // TODO: Open Pro Modal
-            console.log(error);
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh();
         }
